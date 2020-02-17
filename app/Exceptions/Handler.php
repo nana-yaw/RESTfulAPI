@@ -2,16 +2,17 @@
 
 namespace App\Exceptions;
 
-use App\Traits\ApiResponser;
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
+use App\Traits\ApiResponser;
+use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -87,7 +88,20 @@ class Handler extends ExceptionHandler
             return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
         }
 
-        return parent::render($request, $exception);
+        if ($exception instanceof QueryException) {
+            $errorCode = $exception->errorInfo[1];
+
+            if ($errorCode == 1451) {
+                return $this->errorResponse('Cannot remove this resource permanently. it is related with to other resources', 409);
+            }
+        }
+
+        if (config('app.debug')) {
+            
+            return parent::render($request, $exception);
+        }
+
+        return $this->errorResponse('Unexpected Exception. Try again later.', 500);
     }
 
     /**
