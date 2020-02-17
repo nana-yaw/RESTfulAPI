@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
 
         factory(Transaction::class, $transactionsQuantity)->create();
 
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1 ');
 
         // $this->call(UsersTableSeeder::class);
 
