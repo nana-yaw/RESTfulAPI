@@ -89,7 +89,12 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof QueryException) {
+            
             $errorCode = $exception->errorInfo[1];
+
+            if ($errorCode == 1048) {
+                return $this->errorResponse('The specified values cannot be empty nor null!', 404);
+            }
 
             if ($errorCode == 1451) {
                 return $this->errorResponse('Cannot remove this resource permanently. it is related with to other resources', 409);
