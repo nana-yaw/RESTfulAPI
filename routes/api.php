@@ -35,6 +35,7 @@ Route::resource('sellers', 'Seller\SellerController', ['only' => ['index', 'show
  * Categories
  */
 Route::resource('categories', 'Category\CategoryController', ['except' => ['create', 'edit']]);
+Route::resource('categories.products', 'Category\CategoryProductController', ['only' => ['index']]);
 
 /**
  * Products
