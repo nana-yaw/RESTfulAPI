@@ -7,6 +7,10 @@ use App\Scopes\SellerScope;
 
 class Seller extends User
 {
+    protected $hidden = [
+        'pivot',
+    ];
+    
     protected static function boot()
     {
         parent::boot();
