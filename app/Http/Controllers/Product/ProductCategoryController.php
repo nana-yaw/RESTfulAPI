@@ -22,17 +22,6 @@ class ProductCategoryController extends ApiController
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -53,8 +42,14 @@ class ProductCategoryController extends ApiController
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product, Category $category)
     {
-        //
+        if (!($product->categories()->find($category->id))) {
+            return $this->errorResponse('The specified category is not a category of this product', 404);
+        }
+
+        $product->categories()->detach($category->id);
+
+        return $this->showAll($product->categories);
     }
 }
