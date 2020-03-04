@@ -73,7 +73,7 @@ class UserController extends ApiController
     {
 
         $rules = [
-            'email' => 'email|unique:users,email' . $user->id,
+            'email' => 'email|unique:users,email',
             'password' => 'min:6|confirmed',
             'admin' => 'in:' . User::ADMIN_USER . ',' . User::REGULAR_USER
         ];
