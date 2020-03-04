@@ -152,9 +152,13 @@ class UserController extends ApiController
         if (empty($user->verification_token) || ($user->verification_token == null)) {
             
             $user->verification_token = User::generateVerificationCode();
+
+            $user->save();
         }
 
-        Mail::to($user)->send(new UserCreated($user));
+        retry(5, function() use($user) {
+            Mail::to($user)->send(new UserCreated($user));
+        }, 100);
 
         return $this->showMessage('The verification email resent.');
     }
